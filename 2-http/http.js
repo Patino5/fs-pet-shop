@@ -22,7 +22,16 @@ const handleRequest = (req, res) => {
     } else {
       send404(req, res);
     }
-  }  else {
+  } else if (req.method === "POST" && req.url === "/pets") {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("end", () => {
+      pets.push(JSON.parse(body));
+      sendJSON(res, pets);
+    });
+  } else {
     send404(req, res);
   }
 };
