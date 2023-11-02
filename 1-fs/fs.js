@@ -20,6 +20,9 @@ if(process.argv.length <= 2) {
         case 'create':
             createPet(args[1], args[2], args[3])
             break;
+        case 'update':
+            updatePet(args[1], args[2], args[3], args[4])
+            break
     }
 }
 
@@ -65,5 +68,34 @@ function createPet(petAge, petKind, petName){
             }
             console.log('file write success')
         })
+    })
+}
+
+async function updatePet(petIndex, petAge, petKind, petName){
+    if ([petIndex, petAge, petKind, petName].includes(undefined) ) {
+        console.log("Usage: node ./js.js update <index> <age> <kind> <name>")
+        process.exit(1)
+    } 
+    let data = await fs.promises.readFile(dbPath, 'utf8', (error, data) => {
+        if(error){
+            console.error(`Error reading file`, error)
+            process.exit(9);
+        }
+    })
+
+    petData = JSON.parse(data)
+    console.log(`Replacing:`,petData[petIndex])
+    petData[petIndex] = {
+        age: Number(petAge),
+        kind: petKind,
+        name: petName
+    }
+
+    fs.writeFile(dbPath, JSON.stringify(petData), (error) => {
+        if(error){
+            console.error(`Usage: node fs.js read INDEX`)//Usage: node fs.js read INDEX
+            process.exit(9);
+        }
+        console.log('file write success');
     })
 }
