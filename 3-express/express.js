@@ -38,6 +38,7 @@ if ([pet.age, pet.kind, pet.name].includes(undefined)) {
 } else {
     pets.push(pet)
     updateDatabase()
+    res.status(200)
     res.send("Success.")
 }
 }
@@ -108,3 +109,35 @@ start()
 
 // // :id 
 // // req.params.id
+
+// import express from 'express'
+
+// const app = express()
+//  PORT = 3000
+
+// app.use(express.json())
+
+
+// app.get('/pets', (req, res) => {
+//     res.json({message: 'hit the get all pets route'})
+// })
+
+// app.get('/pets/:id', (req, res) => {
+//     const {id} = req.params
+//     if(typeof id !== Number){
+//         // data validation for security
+//     }
+//     res.json({message: `id of: ${id} recieved`})
+// })
+
+// app.post('/pets', (req, res) => {
+//     const {name, age, kind} = req.body
+//     res.json({name: name, age: age, kind, kind})
+// })
+
+
+
+
+// app.listen(PORT, () => {
+//     console.log(`Listening on PORT: ${PORT}`);
+// })
