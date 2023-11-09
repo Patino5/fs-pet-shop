@@ -94,7 +94,7 @@ const pool = new Pool ({
 
 // middlewares
 // app.use(express.static('public'))
-
+app.use(express.json())
 
 
 app.get('/api/pets', async (req, res) => {
@@ -122,6 +122,25 @@ app.get('/api/pets/:id', async (req, res) => {
     res.json(error)
   }
 })
+
+app.post('/api/pets', async (req, res) => {
+  const pet = req.body;
+  if ([pet.name, pet.kind, pet.age].includes(undefined)) {
+    res.status(400).send('Bad Request');
+  } else {
+    try {
+      const { rows } = await pool.query('INSERT INTO pets(name, kind, age) VALUES($1, $2, $3) RETURNING *', [
+        pet.name,
+        pet.kind,
+        pet.age,
+      ]);
+      res.status(201).json(rows[0]);
+    } catch (error) {
+      res.status(500).send('Internal Server Error');
+    }
+  }
+});
+
 
 
 
