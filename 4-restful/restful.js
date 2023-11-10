@@ -87,15 +87,18 @@ const PORT = 3000
 const pool = new Pool ({
   user: 'ryanpatino',
   database: 'petsdb',
-  password: '',
+  password: 'AirForce25%',
   host: 'localhost',
   port: 5432
 })
 
 // middlewares
-// app.use(express.static('public'))
+app.use(express.static(__dirname + '/public'))
 app.use(express.json())
 
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + "/public/index.html")
+})
 
 app.get('/api/pets', async (req, res) => {
   try {
@@ -141,9 +144,35 @@ app.post('/api/pets', async (req, res) => {
   }
 });
 
+app.put('/api/pets/:id', async (req, res) => {
+  const updatedPetData = req.body;
+  const id = parseInt(req.params.id)
+
+  if (id >= 0) {
+    try {
+      const {rows} = await pool.query('UPDATE pets SET name = $1, kind = $2, age = $3 WHERE id = $4 RETURNING *', [
+        updatedPetData.name ,
+        updatedPetData.kind,
+        updatedPetData.age,
+        id
+      ] )
+      if(rows.length === 1) {
+        res.status(200).json(rows)
+      } else {
+        res.status(404).send('Not Found')
+      }
+    } catch (error) {
+      res.status(500).send('Internal Server Error')
+    }
+  
+  } else {
+    res.status(400).send('Bad Request')
+  }
+})
+
 
 
 
 app.listen(PORT, () => {
-  console.log('listening');
+  console.log(`listening on port: ${PORT}`);
 })
