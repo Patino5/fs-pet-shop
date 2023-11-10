@@ -170,7 +170,24 @@ app.put('/api/pets/:id', async (req, res) => {
   }
 })
 
+app.delete('/api/pets/:id', async (req, res) =>{
+  const id = parseInt(req.params.id)
+  if (id >= 0){
+  try {
+    const {rows} = await pool.query('DELETE FROM pets WHERE id = $1 RETURNING *', [id])
 
+    if(rows.length === 1) {
+      res.status(200).json(rows)
+    } else {
+      res.status(404).send('Not Found')
+    }
+  } catch (error) {
+    res.status(500).send('Internal Server Error')
+  }
+} else {
+  res.status(404).send('Bad Request')
+}
+})
 
 
 app.listen(PORT, () => {
