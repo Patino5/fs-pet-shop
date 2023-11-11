@@ -87,7 +87,7 @@ const PORT = 3000
 const pool = new Pool ({
   user: 'ryanpatino',
   database: 'petsdb',
-  password: 'AirForce25%',
+  password: 'Ryan',
   host: 'localhost',
   port: 5432
 })
